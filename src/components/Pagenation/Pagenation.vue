@@ -52,7 +52,7 @@
 export default {
     name: "Pagenation",
 
-    props: ["pages", "goToPage"],
+    props: ["pages", "getPageContentByNumber"],
 
     methods: {
         format(digit) {
@@ -60,6 +60,11 @@ export default {
                 .toString()
                 .split(/(?=(?:\d{3})+(?!\d))/g)
                 .join(" ");
+        },
+
+        goToPage(pageNumber) {
+            window.scroll(0, 0);
+            this.getPageContentByNumber(pageNumber);
         },
     },
 

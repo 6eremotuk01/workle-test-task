@@ -1,10 +1,10 @@
 <template>
-    <div
+    <img
+        src="../../assets/loading.png"
         :style="{ display: showing ? 'flex' : 'none' }"
-        class="loading-wrapper"
-    >
-        <img src="../../assets/loading.png" alt="" class="loading" />
-    </div>
+        alt=""
+        class="loading"
+    />
 </template>
 
 <script>
@@ -26,19 +26,8 @@ export default {
 }
 .loading {
     animation: loading-spin 1s linear infinite;
-}
-
-.loading-wrapper {
     position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.05);
+    left: 20px;
+    top: 20px;
 }
 </style>

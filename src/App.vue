@@ -23,7 +23,7 @@
         <Pagenation
             v-if="!error.status && !loading"
             :pages="pages"
-            :goToPage="getPageContentByNumber"
+            :getPageContentByNumber="getPageContentByNumber"
         />
     </div>
 </template>
@@ -128,7 +128,7 @@ export default {
                         // Запрос произошёл удачно
                         (jsonData) => {
                             // Если запрос веррнул пустые данные
-                            if (!this.isEmptyObject(jsonData)) {
+                            if (this.isEmptyObject(jsonData)) {
                                 throw {
                                     status: true,
                                     header: "Ошибка",
