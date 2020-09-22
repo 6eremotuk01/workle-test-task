@@ -21,7 +21,7 @@ export default {
 .error {
     font-family: "Roboto Condensed";
 
-    width: 660px;
+    max-width: 660px;
     margin: 20px auto;
 
     padding: 20px;
@@ -51,5 +51,11 @@ export default {
     padding: 5px 10px;
     border-radius: 3px;
     cursor: pointer;
+}
+
+@media screen and (max-width: 767px) {
+    .error {
+        margin: 20px;
+    }
 }
 </style>

@@ -24,15 +24,15 @@ src
 ├─── assets
 │    ├─── eye.png
 │    └─── loading.png
-└───components
-    ├─── Error
-    │    └─── Error.vue
-    ├─── Loading
-    │    └───Loading.vue
-    ├─── Pagenation
-    │    └─── Pagenation.vue
-    └─── Post
-         ├─── Autor.vue
-         ├─── Post.vue
-         └─── Views.vue
+└─── components
+     ├─── Error
+     │    └─── Error.vue
+     ├─── Loading
+     │    └─── Loading.vue
+     ├─── Pagenation
+     │    └─── Pagenation.vue
+     └─── Post
+          ├─── Autor.vue
+          ├─── Post.vue
+          └─── Views.vue
 ```
