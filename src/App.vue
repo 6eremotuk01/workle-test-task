@@ -18,11 +18,10 @@
                 :pictureAlt="post.description"
                 :postId="post.id"
                 :token="query.token"
-                :error="error"
             />
         </div>
         <Pagenation
-            v-if="!error.status"
+            v-if="!error.status && !loading"
             :pages="pages"
             :goToPage="getPageContentByNumber"
         />
@@ -121,13 +120,6 @@ export default {
                             };
                         }
 
-                        // Оповещаем о количестве запросов, доступных на сегодня
-                        console.log(
-                            `Запрос выполнен. Уникальных на сегодня запросов осталось: ${response.headers.get(
-                                "X-Ratelimit-Remaining"
-                            )}`
-                        );
-
                         // Возвращаем результат
                         return response.json();
                     })
@@ -136,7 +128,7 @@ export default {
                         // Запрос произошёл удачно
                         (jsonData) => {
                             // Если запрос веррнул пустые данные
-                            if (!jsonData.results) {
+                            if (!this.isEmptyObject(jsonData)) {
                                 throw {
                                     status: true,
                                     header: "Ошибка",
@@ -190,6 +182,10 @@ export default {
                                 text: errorProperties,
                             };
                         }
+
+                        if (!this.showUserErrorMessage)
+                            console.log(this.error.text);
+
                         this.loading = false;
                     });
             } catch (errorProperties) {
@@ -203,8 +199,18 @@ export default {
                         text: errorProperties,
                     };
                 }
+
+                if (!this.showUserErrorMessage) console.log(this.error.text);
+
                 this.loading = false;
             }
+        },
+
+        isEmptyObject(object) {
+            for (let key in object) {
+                return false;
+            }
+            return true;
         },
     },
 

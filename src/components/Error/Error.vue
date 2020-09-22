@@ -44,6 +44,8 @@ export default {
 }
 
 .error__repeat-button {
+    font-family: "Roboto Condensed";
+
     background: white;
     border: black 1px solid;
     padding: 5px 10px;
