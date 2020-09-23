@@ -88,4 +88,10 @@ src
 <p align="center"> 
 	<img src="screenshots\pages\320+.png">
 </p>
+### Дополнительные инструменты
 
+Для достижения конечного результата были использованы также следующие инструменты:
+
+- [Babel](https://babeljs.io/)
+- [Webpack](https://webpack.js.org/)
+- [Vue CLI](https://cli.vuejs.org/)
