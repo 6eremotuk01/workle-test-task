@@ -1,16 +1,16 @@
 <template>
-    <a :href="profileUrl" target="_blank">
+    <a :href="postInfo.user.links.html" target="_blank">
         <div class="post__autor">
             <img
-                v-bind:src="autorPicture"
+                v-bind:src="postInfo.user.profile_image.small"
                 alt=""
                 class="post__autor__picture"
             />
             <div class="post__autor__text">
                 <h5 class="autor__text__name">
-                    {{ autorName }}
+                    {{ postInfo.user.name }}
                 </h5>
-                <p class="autor__text__link">@{{ autorId }}</p>
+                <p class="autor__text__link">@{{ postInfo.user.username }}</p>
             </div>
         </div>
     </a>
@@ -18,8 +18,8 @@
 
 <script>
 export default {
-    name: "post__autor",
-    props: ["autorName", "autorId", "autorPicture", "profileUrl"],
+    name: "Autor",
+    props: ["postInfo"],
     components: {},
 };
 </script>

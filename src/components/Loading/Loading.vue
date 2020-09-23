@@ -1,6 +1,6 @@
 <template>
     <img
-        src="../../assets/loading.png"
+        src="../../assets/img/loading.png"
         :style="{ display: showing ? 'flex' : 'none' }"
         alt=""
         class="loading"
@@ -26,6 +26,7 @@ export default {
 }
 .loading {
     animation: loading-spin 1s linear infinite;
+
     position: fixed;
     left: 20px;
     top: 20px;

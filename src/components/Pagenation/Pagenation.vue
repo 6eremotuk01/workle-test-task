@@ -104,22 +104,27 @@ export default {
 
 <style>
 .pagenation {
-    position: fixed;
-    height: 60px;
-    bottom: 0px;
-    left: 0px;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    position: fixed;
+    bottom: -100px;
+    left: 0px;
+
+    height: 160px;
+    width: 100%;
+
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
 
     font-family: "Roboto Condensed";
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
     line-height: 60px;
+
+    padding-bottom: 100px;
 }
 
 .pagenation__pages-wrapper {

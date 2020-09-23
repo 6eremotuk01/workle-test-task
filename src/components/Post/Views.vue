@@ -72,7 +72,7 @@ export default {
     width: 18px;
     height: 12px;
 
-    background: url("../../assets/eye.png");
+    background: url("../../assets/img/eye.png");
     background-position: center center;
 }
 

@@ -1,17 +1,12 @@
 <template>
     <div class="post">
-        <Autor
-            :autorName="autorName"
-            :autorId="autorId"
-            :autorPicture="autorPicture"
-            :profileUrl="profileUrl"
-        />
-
-        <div class="post__picture-wrapper" :title="pictureAlt">
-            <img :src="postPicture" :alt="pictureAlt" class="post__picture" />
-        </div>
-
-        <Views :postId="postId" :token="token" :error="error" />
+        <Autor :postInfo="postInfo" />
+        <div
+            :style="{ backgroundImage: `url(${postInfo.urls.regular})` }"
+            class="post__picture-container"
+            :title="postInfo.description"
+        ></div>
+        <Views :postId="postInfo.id" :token="token" :error="error" />
     </div>
 </template>
 
@@ -21,17 +16,7 @@ import Views from "./Views";
 
 export default {
     name: "Post",
-    props: [
-        "autorName",
-        "autorId",
-        "postPicture",
-        "autorPicture",
-        "profileUrl",
-        "pictureAlt",
-        "postId",
-        "token",
-        "error",
-    ],
+    props: ["token", "error", "postInfo"],
 
     components: {
         Autor,
@@ -42,15 +27,21 @@ export default {
 
 <style>
 .post {
-    max-width: 320px;
+    min-width: 320px;
+    margin-left: 20px;
 }
 
-.post__picture-wrapper {
+.post:nth-child(odd) {
+    margin-left: 0px;
+}
+
+.post__picture-container {
     width: 100%;
-}
+    padding-bottom: 71.875%;
 
-.post__picture {
-    max-width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 @media screen and (max-width: 999px) {
@@ -61,7 +52,8 @@ export default {
 
 @media screen and (max-width: 767px) {
     .post {
-        max-width: 100%;
+        min-width: 100%;
+        margin: 0;
     }
 }
 </style>

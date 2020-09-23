@@ -1,31 +1,27 @@
 <template>
-    <div id="app">
+    <main id="app">
         <Loading v-if="showLoadingWheel" :showing="loading" />
         <Error
             v-if="error.status && showUserErrorMessage"
             :error="error"
             :repeatMethod="getPageContentByNumber.bind(this, 1)"
         />
-        <div class="posts" v-if="!error.status">
-            <Post
-                v-for="(post, index) in posts.current"
-                v-bind:key="index"
-                :postPicture="post.urls.regular"
-                :autorPicture="post.user.profile_image.small"
-                :autorName="post.user.name"
-                :autorId="post.user.username"
-                :profileUrl="post.user.links.html"
-                :pictureAlt="post.description"
-                :postId="post.id"
-                :token="query.token"
+
+        <div v-if="!error.status">
+            <div class="posts">
+                <Post
+                    v-for="(post, index) in posts.current"
+                    :key="index"
+                    :token="query.token"
+                    :postInfo="post"
+                />
+            </div>
+            <Pagenation
+                :pages="pages"
+                :getPageContentByNumber="getPageContentByNumber"
             />
         </div>
-        <Pagenation
-            v-if="!error.status && !loading"
-            :pages="pages"
-            :getPageContentByNumber="getPageContentByNumber"
-        />
-    </div>
+    </main>
 </template>
 
 <script>
@@ -36,6 +32,7 @@ import Loading from "./components/Loading/Loading";
 
 export default {
     name: "App",
+
     components: {
         Post,
         Pagenation,
@@ -46,7 +43,7 @@ export default {
     data: () => {
         return {
             loading: false,
-            showLoadingWheel: true, // Отображение колёсика загрузки
+            showLoadingWheel: false, // Отображение колёсика загрузки
             showUserErrorMessage: true, // Отображение информации об ошибке пользователю
 
             // Информация о постах
@@ -64,7 +61,7 @@ export default {
             // Настройка запроса
             query: {
                 token: "mOQX6Cj3-f4YVuy4XM3su5MGBUOW5HXPF_XDyEFeWPs",
-                searchQuery: "minimal",
+                searchQuery: "minimalism",
                 perPage: 20,
                 type: "https://api.unsplash.com/search/photos/",
                 string: undefined,
@@ -79,6 +76,103 @@ export default {
     },
 
     methods: {
+        // Обработка ошибок запроса
+        checkResponse(response) {
+            // Если страница не найдена
+            if (response.status === 404) {
+                throw {
+                    status: true,
+                    header: "Ошибка 404",
+                    text: "Адрес не найден.",
+                };
+            }
+
+            // Если у сервера произошла внутренняя ошибка
+            if (response.status === 500) {
+                throw {
+                    status: true,
+                    header: "Ошибка 500",
+                    text: "Внутренняя ошибка сервера.",
+                };
+            }
+
+            // Возвращаем результат
+            return response.json();
+        },
+
+        // Обработка успешного запроса
+        //      jsonData — результат запроса
+        successfulResults(jsonData) {
+            // Если запрос веррнул пустые данные
+            if (this.isEmptyObject(jsonData)) {
+                throw {
+                    status: true,
+                    header: "Ошибка",
+                    text:
+                        "Запрос к unsplash.com не ответил результатом. Возможно, что сервис не работает на данный момент. \n\nИли ваш лимит запросов был исчерпан.",
+                };
+            }
+
+            // Если на запрос ответили ошибкой
+            if (jsonData.errors) {
+                throw {
+                    status: true,
+                    header: "Ошибка",
+                    text: `Сервер ответил ошибкой:\n${jsonData.errors.join(
+                        "\n"
+                    )}`,
+                };
+            }
+
+            // Записываем данные
+            this.posts = {
+                current: jsonData.results,
+                total: jsonData.total,
+            };
+            this.pages.total = jsonData.total_pages;
+
+            // Завершаем з
+            this.loading = false;
+        },
+
+        // Обработка неудачного запроса
+        //      error — данные запроса с ошибкой
+        unsuccessfulResult(error) {
+            this.loading = false;
+            throw {
+                status: true,
+                header: "Ошибка",
+                text: `Сервер ответил ошибкой:\n${error.toString()}`,
+            };
+        },
+
+        // Обработка пойманных ошибок
+        //      catchedError — пойманая ошибка блоком catch
+        errorProcessing(catchedError) {
+            if (catchedError.header) {
+                this.error = catchedError;
+            } else {
+                this.error = {
+                    status: true,
+                    header: "Ошибка",
+                    text: catchedError,
+                };
+            }
+
+            if (!this.showUserErrorMessage) console.log(this.error.text);
+
+            this.loading = false;
+        },
+
+        // Проверка объекта на пустоту
+        //      object — проверяемый объект
+        isEmptyObject(object) {
+            for (let key in object) {
+                return false;
+            }
+            return true;
+        },
+
         // Получаем посты, на указанной странице
         //      pageNumber — новый номер страницы
         getPageContentByNumber(pageNumber) {
@@ -87,12 +181,13 @@ export default {
                 return;
             }
 
+            this.loading = true;
+
             this.error = {
                 status: false,
                 header: "",
                 text: "",
             };
-            this.loading = true;
 
             //Формируем новый запрос
             this.pages.current = pageNumber;
@@ -101,116 +196,20 @@ export default {
             try {
                 // Отправка сформированного запроса
                 fetch(this.query.string)
-                    .then((response) => {
-                        // Если страница не найдена
-                        if (response.status === 404) {
-                            throw {
-                                status: true,
-                                header: "Ошибка 404",
-                                text: "Адрес не найден.",
-                            };
-                        }
-
-                        // Если у сервера произошла внутренняя ошибка
-                        if (response.status === 500) {
-                            throw {
-                                status: true,
-                                header: "Ошибка 500",
-                                text: "Внутренняя ошибка сервера.",
-                            };
-                        }
-
-                        // Возвращаем результат
-                        return response.json();
-                    })
-
+                    .then((response) => this.checkResponse(response))
                     .then(
                         // Запрос произошёл удачно
-                        (jsonData) => {
-                            // Если запрос веррнул пустые данные
-                            if (this.isEmptyObject(jsonData)) {
-                                throw {
-                                    status: true,
-                                    header: "Ошибка",
-                                    text:
-                                        "Запрос к unsplash.com не ответил результатом. Возможно, что сервис не работает на данный момент. \n\nИли ваш лимит запросов был исчерпан.",
-                                };
-                            }
-
-                            // Если на запрос ответили ошибкой
-                            if (jsonData.errors) {
-                                throw {
-                                    status: true,
-                                    header: "Ошибка",
-                                    text: `Сервер ответил ошибкой. Текст ошибки ${jsonData.errors.join(
-                                        "\n"
-                                    )}`,
-                                };
-                            }
-
-                            // Записываем данные
-                            this.posts = {
-                                current: jsonData.results,
-                                total: jsonData.total,
-                            };
-                            this.pages = {
-                                current: pageNumber,
-                                total: jsonData.total_pages,
-                            };
-
-                            // Завершаем з
-                            this.loading = false;
-                        },
+                        (jsonData) => this.successfulResults(jsonData),
 
                         // Запрос прошёл с неудачей
-                        (error) => {
-                            this.loading = false;
-                            throw {
-                                status: true,
-                                header: "Ошибка",
-                                text: `Сервер ответил ошибкой. Текст ошибки ${error.toString()}`,
-                            };
-                        }
+                        (error) => this.unsuccessfulResult(error)
                     )
-                    .catch((errorProperties) => {
-                        if (errorProperties.header) {
-                            this.error = errorProperties;
-                        } else {
-                            this.error = {
-                                status: true,
-                                header: "Ошибка",
-                                text: errorProperties,
-                            };
-                        }
-
-                        if (!this.showUserErrorMessage)
-                            console.log(this.error.text);
-
-                        this.loading = false;
-                    });
-            } catch (errorProperties) {
-                // Обрабатываем все ошибки
-                if (errorProperties.header) {
-                    this.error = errorProperties;
-                } else {
-                    this.error = {
-                        status: true,
-                        header: "Ошибка",
-                        text: errorProperties,
-                    };
-                }
-
-                if (!this.showUserErrorMessage) console.log(this.error.text);
-
-                this.loading = false;
+                    .catch((catchedError) =>
+                        this.errorProcessing(catchedError)
+                    );
+            } catch (catchedError) {
+                this.errorProcessing(catchedError);
             }
-        },
-
-        isEmptyObject(object) {
-            for (let key in object) {
-                return false;
-            }
-            return true;
         },
     },
 
@@ -222,8 +221,16 @@ export default {
 </script>
 
 <style>
+@import url("./assets/fonts/fonts.css");
+
 * {
     box-sizing: border-box;
+
+    font-family: "Roboto Condensed";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 14px;
 }
 
 body {
@@ -232,16 +239,20 @@ body {
 
 .posts {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
+    justify-content: center;
+
     margin: 0 auto;
-    width: 660px;
+
     padding-bottom: 70px;
+
+    width: 660px;
 }
 
 @media screen and (max-width: 999px) {
     .posts {
         width: 100%;
+
         padding-left: 54px;
         padding-right: 54px;
     }
@@ -250,6 +261,7 @@ body {
 @media screen and (max-width: 767px) {
     .posts {
         flex-direction: column;
+
         padding-left: 20px;
         padding-right: 20px;
     }
@@ -258,6 +270,7 @@ body {
 @media screen and (max-width: 479px) {
     .posts {
         flex-direction: column;
+
         padding-left: 0px;
         padding-right: 0px;
     }
