@@ -71,7 +71,8 @@ export default {
             // Настройка запроса
             error: {
                 status: false,
-                text: "",
+                herader: undefined,
+                text: undefined,
             },
         };
     },
