@@ -31,7 +31,7 @@ src
 │    │    ├─── RobotoCondensed-Regular.ttf
 │    │    └─── RobotoCondensed-Regular.woff
 │    └─── img
-│         ├─── eye.png
+│         ├─── eye.svg
 │         └─── loading.png
 └─── components
      ├─── Error
