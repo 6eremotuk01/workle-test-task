@@ -70,10 +70,11 @@ export default {
 
 .post__views__eye {
     width: 18px;
-    height: 12px;
+    height: 20px;
 
-    background: url("../../assets/img/eye.png");
+    background: url("../../assets/img/eye.svg");
     background-position: center center;
+    background-repeat: no-repeat;
 }
 
 .post__views__count {
@@ -81,8 +82,6 @@ export default {
     margin-right: 5px;
 
     padding: 0;
-
-    height: 12px;
 
     font-family: "Roboto Condensed";
     font-style: normal;

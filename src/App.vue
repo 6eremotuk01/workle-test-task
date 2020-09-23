@@ -43,6 +43,7 @@ export default {
     data: () => {
         return {
             loading: false,
+
             showLoadingWheel: false, // Отображение колёсика загрузки
             showUserErrorMessage: true, // Отображение информации об ошибке пользователю
 
@@ -225,12 +226,6 @@ export default {
 
 * {
     box-sizing: border-box;
-
-    font-family: "Roboto Condensed";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 12px;
-    line-height: 14px;
 }
 
 body {
