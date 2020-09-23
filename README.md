@@ -22,8 +22,17 @@ src
 ├─── App.vue
 ├─── main.js
 ├─── assets
-│    ├─── eye.png
-│    └─── loading.png
+│    ├─── fonts
+│    │    ├─── fonts.css
+│    │    ├─── RobotoCondensed-Bold.svg
+│    │    ├─── RobotoCondensed-Bold.ttf
+│    │    ├─── RobotoCondensed-Bold.woff
+│    │    ├─── RobotoCondensed-Regular.svg
+│    │    ├─── RobotoCondensed-Regular.ttf
+│    │    └─── RobotoCondensed-Regular.woff
+│    └─── img
+│         ├─── eye.png
+│         └─── loading.png
 └─── components
      ├─── Error
      │    └─── Error.vue
