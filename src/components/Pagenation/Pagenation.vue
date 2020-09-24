@@ -65,7 +65,6 @@ export default {
         goToPage(pageNumber) {
             window.scroll(0, 0);
             this.getPageContentByNumber(pageNumber);
-            console.log(this.pages.total);
         },
     },
 
